@@ -2,109 +2,148 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Local Time by Tilix</title>
+    <title>Paris Time</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D529XEGVJ8"></script>
     <script>
-/* Get the documentElement (<html>) to display the page in fullscreen */
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-D529XEGVJ8');
+    </script>
+    <script>
     var elem = document.documentElement;
 
-/* View in fullscreen */
-function openFullscreen() {
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) { /* Safari */
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE11 */
-    elem.msRequestFullscreen();
-  }
-}
+    function openFullscreen() {
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        }
+    }
 
-/* Close fullscreen */
-function closeFullscreen() {
-  if (document.exitFullscreen) {
-    document.exitFullscreen();
-  } else if (document.webkitExitFullscreen) { /* Safari */
-    document.webkitExitFullscreen();
-  } else if (document.msExitFullscreen) { /* IE11 */
-    document.msExitFullscreen();
-  }
-}
+    function closeFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+
+    var displayFullscreen = false;
+    function toggle() {
+        if (!displayFullscreen) {
+        displayFullscreen = true;
+        openFullscreen();
+        } else {
+        displayFullscreen = false;
+        closeFullscreen();
+        }
+    }
     </script>
 </head>
 <body>
     <style>
         * {
             margin: 0;
-            /*border: 1px solid red;*/
         }
         body {
             background-color: #4dffff;
+            text-align: center;
+            font-family: system-ui;
+            animation: fadeInAnimation ease 5s;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
         }
-        /* Safari */
         :-webkit-full-screen {
             background-color: #4dffff;
         }
+        @keyframes fadeInAnimation {
+                0% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
         #container {
             display: grid;
-            grid-template-columns: 3em 0.4em 3em 0.4em 3Em;
-            grid-template-rows: auto auto;
-            justify-content: space-evenly;
-            text-align: center;
-            
+            grid-template-columns: 1.2em 1.2em 0.8em 1.2em 1.2em 0.8em 1.2em 1.2em;
+            grid-template-rows: 2em 2em;
+            justify-content: center;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            font-family: system-ui;
             font-size: 5em;
-            
         }
         .time {
             display: inline;
             font-weight: 500;
             font-size: 2em;
         }
+        .separator {
+            font-size: 1.5em;
+            align-self: center;
+        }
         h2 {
-            grid-column: 1/6;
+            grid-column: 1/9;
             font-weight: 200;
             letter-spacing: 75px;
             text-indent: 75px;
         }
         button {
-            font-family: system-ui;
-            background-color: white;
-            border-radius: 10%;
-            padding: 20px;
+            width: fit-content;
+            background-color: #4dffff;
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            text-align: center;
+            font-size: 16px;
+            transition: 0.8s;
+            text-decoration: none;
+            cursor: pointer;
         }
-    </style>
-    
+        button:hover {
+            background-color: white;
+            color:#4dffff;
+            transition: 0.3s;
+        }
+</style>
+<button onclick="toggle()">Fullscreen</button>
 <div id="container">
-        <div class="hours time"></div>
+        <div class="hour1 time"></div>
+        <div class="hour2 time"></div>
         <div class="separator time">:</div>
-        <div class="minutes time"></div>
+        <div class="minute1 time"></div>
+        <div class="minute2 time"></div>
         <div class="separator time">:</div>
-        <div class="seconds time"></div>
+        <div class="second1 time"></div>
+        <div class="second2 time"></div>
         <script type="text/javascript">
             function displayTime() {
                 let date = new Date();
                 let time = date.toLocaleTimeString();
                 
-                let hours = date.getHours();
-                let minutes = date.getMinutes();
-                let seconds = date.getSeconds();
+                let hours = date.getHours().toString();
+                let minutes = date.getMinutes().toString();
+                let seconds = date.getSeconds().toString();
 
                 if (hours < 10) {hours = "0" + hours};
                 if (minutes < 10) {minutes = "0" + minutes};
                 if (seconds < 10) {seconds = "0" + seconds};
 
-                document.getElementsByClassName("hours")[0].innerHTML = hours;
-                document.getElementsByClassName("minutes")[0].innerHTML = minutes;
-                document.getElementsByClassName("seconds")[0].innerHTML = seconds;
+                document.getElementsByClassName("hour1")[0].innerHTML = hours.slice(0, 1);
+                document.getElementsByClassName("hour2")[0].innerHTML = hours.slice(-1);
+                document.getElementsByClassName("minute1")[0].innerHTML = minutes.slice(0, 1);
+                document.getElementsByClassName("minute2")[0].innerHTML = minutes.slice(-1);
+                document.getElementsByClassName("second1")[0].innerHTML = seconds.slice(0, 1);
+                document.getElementsByClassName("second2")[0].innerHTML = seconds.slice(-1);
             }
             setInterval(displayTime,1000);
         </script>
     <h2>PARIS</h2>
 </div>
-<button onclick="openFullscreen()">fullscreen</button>
 </body>
 </html>

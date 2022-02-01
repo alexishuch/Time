@@ -76,7 +76,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            font-size: 10vh;
+            font-size: 7vw;
         }
         .time {
             display: inline;
@@ -91,7 +91,6 @@
             grid-column: 1/9;
             font-weight: 200;
             letter-spacing: 5%;
-            font-size: 100px;
         }
         button {
             width: fit-content;
@@ -143,31 +142,58 @@
             }
             setInterval(displayTime,1000);
         </script>
-        <div class="cityContainer" style="height: 80px; grid-column: 1/9;">
+        <div class="cityContainer" style="grid-column: 1/9;">
 
 	    <h2 class="city"></h2>
 
         </div>
         <script>
-            var request = new XMLHttpRequest()
-            request.open('GET', 'https://api.openweathermap.org/data/2.5/weather?lat=47.209&lon=-1.5237&appid=06ebbdd06c4de5490b13661e32cf5fc4', true)
-            request.onload = function () {
+        let latitude = 0
+        let longitude = 0
+
+        function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition)
+            }
+        }
+
+        function showPosition(position) {
+            console.log(position)
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+        }
+        
+        getLocation()
+        setTimeout(getCity, 1500);
+        
+        function getCity() {
+        var request = new XMLHttpRequest()
+        request.open('GET', `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=06ebbdd06c4de5490b13661e32cf5fc4`, true)
+        request.onload = function () {
             const data = JSON.parse(this.response)
             document.getElementsByClassName("city")[0].innerHTML = data.name;
+        }
+        request.send()
+        resize();
+        }
+        
+        console.log(latitude + ', ' + longitude)
+        const city = document.querySelector('.city');
+        const cityContainer = document.querySelector('.cityContainer');
+        
+        function resize() {
+            let fontSize = window.getComputedStyle(city).fontSize;
+            
+            if (city.clientHeight < cityContainer.clientHeight / 2) {
+                city.style.fontSize = (parseFloat(fontSize) + 1) + 'px';
+            } else if (city.clientHeight > cityContainer.clientHeight / 2) {
+                city.style.fontSize = (parseFloat(fontSize) - 5) + 'px';
+                resize();
             }
-            request.send()
+        }
 
-            const output = document.querySelector('.city');
-            const outputContainer = document.querySelector('.cityContainer');
-
-            function resize() {
-                while (output.clientHeight > outputContainer.clientHeight) {
-                    let fontSize = window.getComputedStyle(output).fontSize;
-                    output.style.fontSize = (parseFloat(fontSize) - 1) + 'px';
-                }
-            }
-
-            setTimeout(resize, 500)
+        setTimeout(resize, 2000);
+        window.addEventListener('resize', resize);
 
         </script>
 </div>

@@ -91,6 +91,7 @@
             grid-column: 1/9;
             font-weight: 200;
             letter-spacing: 5%;
+            font-size: calc(5vw)
         }
         button {
             width: fit-content;
@@ -148,40 +149,42 @@
 
         </div>
         <script>
-        let latitude = 0
-        let longitude = 0
+        let latitude = 0;
+        let longitude = 0;
 
-        function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition)
+        function geolocateUser() {
+            if (navigator.geolocation) {
+
+                alert('Please make sure to allow geolocation.')
+                navigator.geolocation.getCurrentPosition(getCoords);
             }
         }
 
-        function showPosition(position) {
-            console.log(position)
-            latitude = position.coords.latitude;
-            longitude = position.coords.longitude;
-        }
-        
-        getLocation()
-        setTimeout(getCity, 3000);
-        
+        function getCoords(c) {
+                latitude = c.coords.latitude;
+                longitude = c.coords.longitude;
+                console.log(latitude + ', ' + longitude)
+                getCity();
+                resize();
+            }
+
         function getCity() {
-        var request = new XMLHttpRequest()
-        request.open('GET', `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=06ebbdd06c4de5490b13661e32cf5fc4`, true)
-        request.onload = function () {
-            const data = JSON.parse(this.response)
-            document.getElementsByClassName("city")[0].innerHTML = data.name;
-        }
-        request.send()
-        resize();
+            var request = new XMLHttpRequest()
+            request.open('GET', `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=06ebbdd06c4de5490b13661e32cf5fc4`, true)
+            request.onload = function () {
+                const data = JSON.parse(this.response)
+                document.getElementsByClassName("city")[0].innerHTML = data.name;
+            }
+            request.send()
+            resize();
         }
         
-        console.log(latitude + ', ' + longitude)
+        geolocateUser();
+        
         const city = document.querySelector('.city');
         const cityContainer = document.querySelector('.cityContainer');
         
-        function resize() {
+        /*function resize() {
             let fontSize = window.getComputedStyle(city).fontSize;
             
             if (city.clientHeight < cityContainer.clientHeight / 2) {
@@ -194,7 +197,7 @@
 
         setTimeout(resize, 3100);
         window.addEventListener('resize', resize);
-
+        */
         </script>
 </div>
 </body>

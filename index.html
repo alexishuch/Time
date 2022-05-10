@@ -41,8 +41,56 @@
         }
     }
     </script>
-</head>
-<body>
+    <script type="text/javascript">
+        function displayTime() {
+            let date = new Date();
+            let time = date.toLocaleTimeString();
+            
+            let hours = date.getHours().toString();
+            let minutes = date.getMinutes().toString();
+            let seconds = date.getSeconds().toString();
+
+            if (hours < 10) {hours = "0" + hours};
+            if (minutes < 10) {minutes = "0" + minutes};
+            if (seconds < 10) {seconds = "0" + seconds};
+
+            document.getElementsByClassName("hour1")[0].innerHTML = hours.slice(0, 1);
+            document.getElementsByClassName("hour2")[0].innerHTML = hours.slice(-1);
+            document.getElementsByClassName("minute1")[0].innerHTML = minutes.slice(0, 1);
+            document.getElementsByClassName("minute2")[0].innerHTML = minutes.slice(-1);
+            document.getElementsByClassName("second1")[0].innerHTML = seconds.slice(0, 1);
+            document.getElementsByClassName("second2")[0].innerHTML = seconds.slice(-1);
+        };
+        setInterval(displayTime,1000);
+    </script>
+    <script>
+        let latitude = 0;
+        let longitude = 0;
+
+        (function geolocateUser() {
+            if (navigator.geolocation) {
+
+                navigator.geolocation.getCurrentPosition((position)=>{
+                    latitude = position.coords.latitude;
+                    longitude = position.coords.longitude;
+
+                    (function getCity() {
+                        var request = new XMLHttpRequest()
+                        request.open('GET', `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=06ebbdd06c4de5490b13661e32cf5fc4`, true)
+                        request.onload = function () {
+                            const data = JSON.parse(this.response)
+                            document.getElementsByClassName("city")[0].innerHTML = data.name;
+                        }
+                        request.send()
+                    })();
+
+                }, (error)=>{
+                    alert('Please make sure to allow geolocation in browser and system preferences and refresh !')
+                }
+                );
+            }
+        })();
+    </script>
     <style>
         * {
             margin: 0;
@@ -51,7 +99,7 @@
             background-color: #4dffff;
             text-align: center;
             font-family: system-ui;
-            animation: fadeInAnimation ease 5s;
+            animation: fadeInAnimation ease 8s;
             animation-iteration-count: 1;
             animation-fill-mode: forwards;
         }
@@ -91,7 +139,7 @@
             grid-column: 1/9;
             font-weight: 200;
             letter-spacing: 5%;
-            font-size: calc(5vw)
+            font-size: 5vw;
         }
         button {
             width: fit-content;
@@ -108,11 +156,13 @@
         button:hover {
             background-color: white;
             color:#4dffff;
-            transition: 0.3s;
+            transition: 0.2s;
         }
-</style>
-<button onclick="toggle()">Fullscreen</button>
-<div id="container">
+    </style>
+</head>
+<body>
+    <button onclick="toggle()">Fullscreen</button>
+    <div id="container">
         <div class="hour1 time"></div>
         <div class="hour2 time"></div>
         <div class="separator time">:</div>
@@ -121,84 +171,7 @@
         <div class="separator time">:</div>
         <div class="second1 time"></div>
         <div class="second2 time"></div>
-        <script type="text/javascript">
-            function displayTime() {
-                let date = new Date();
-                let time = date.toLocaleTimeString();
-                
-                let hours = date.getHours().toString();
-                let minutes = date.getMinutes().toString();
-                let seconds = date.getSeconds().toString();
-
-                if (hours < 10) {hours = "0" + hours};
-                if (minutes < 10) {minutes = "0" + minutes};
-                if (seconds < 10) {seconds = "0" + seconds};
-
-                document.getElementsByClassName("hour1")[0].innerHTML = hours.slice(0, 1);
-                document.getElementsByClassName("hour2")[0].innerHTML = hours.slice(-1);
-                document.getElementsByClassName("minute1")[0].innerHTML = minutes.slice(0, 1);
-                document.getElementsByClassName("minute2")[0].innerHTML = minutes.slice(-1);
-                document.getElementsByClassName("second1")[0].innerHTML = seconds.slice(0, 1);
-                document.getElementsByClassName("second2")[0].innerHTML = seconds.slice(-1);
-            }
-            setInterval(displayTime,1000);
-        </script>
-        <div class="cityContainer" style="grid-column: 1/9;">
-
-	    <h2 class="city"></h2>
-
-        </div>
-        <script>
-        let latitude = 0;
-        let longitude = 0;
-
-        function geolocateUser() {
-            if (navigator.geolocation) {
-
-                alert('Please make sure to allow geolocation.')
-                navigator.geolocation.getCurrentPosition(getCoords);
-            }
-        }
-
-        function getCoords(c) {
-                latitude = c.coords.latitude;
-                longitude = c.coords.longitude;
-                console.log(latitude + ', ' + longitude)
-                getCity();
-                resize();
-            }
-
-        function getCity() {
-            var request = new XMLHttpRequest()
-            request.open('GET', `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=06ebbdd06c4de5490b13661e32cf5fc4`, true)
-            request.onload = function () {
-                const data = JSON.parse(this.response)
-                document.getElementsByClassName("city")[0].innerHTML = data.name;
-            }
-            request.send()
-            resize();
-        }
-        
-        geolocateUser();
-        
-        const city = document.querySelector('.city');
-        const cityContainer = document.querySelector('.cityContainer');
-        
-        /*function resize() {
-            let fontSize = window.getComputedStyle(city).fontSize;
-            
-            if (city.clientHeight < cityContainer.clientHeight / 2) {
-                city.style.fontSize = (parseFloat(fontSize) + 1) + 'px';
-            } else if (city.clientHeight > cityContainer.clientHeight / 2) {
-                city.style.fontSize = (parseFloat(fontSize) - 5) + 'px';
-                resize();
-            }
-        }
-
-        setTimeout(resize, 3100);
-        window.addEventListener('resize', resize);
-        */
-        </script>
-</div>
+	    <h2 class="city" style="grid-column: 1/9;"></h2>
+    </div>
 </body>
 </html>

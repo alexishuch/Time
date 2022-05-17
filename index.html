@@ -76,7 +76,7 @@
 
                     (function getCity() {
                         var request = new XMLHttpRequest()
-                        request.open('GET', `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=06ebbdd06c4de5490b13661e32cf5fc4`, true)
+                        request.open('GET', `https://fcc-weather-api.glitch.me/api/current?lon=${longitude}&lat=${latitude}`, true)
                         request.onload = function () {
                             const data = JSON.parse(this.response)
                             document.getElementsByClassName("city")[0].innerHTML = data.name;

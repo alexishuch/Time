@@ -9,7 +9,7 @@ A full-screen digital clock displaying user location.
   
 * Geolocate user
 
-  The user is geolocated with the JavaScript *navigator.geolocation* property. The user is prompted to give access. If no access to geolocation data is given, the process stops and no city is displayed. The freeCodeCamp Weather API is then called with the given coordinates to find the city.
+  Users are prompted to give access to their geolocation. If no access to geolocation data is given, the process stops and no city is displayed. Otherwise, the freeCodeCamp Weather API is called with the given coordinates to find city and time with a JSON response.
   
 * Display full-screen
 
